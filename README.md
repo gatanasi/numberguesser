@@ -11,4 +11,20 @@ In the subsequent steps, the player service sends the identifier and its guess t
 When the number was successfully guessed, the instance of the game is considered finished. The respective data can eventually be cleaned up.
 Only registered players can play the game, so all API endpoints of the game host service have to be protected with some kind of an authentication.
 
-The solution should be hosted in Microsoft Azure Cloud using the free subscription and the Azure components of your choice. 
+The solution should be hosted in Microsoft Azure Cloud using the free subscription and the Azure components of your choice.
+
+### TODOs
+- Add unit, integration and e2e-tests
+- Credentials should be stored in Azure Key Vault
+- Implement health check ping endpoint
+- Swagger
+- CI / CD
+- High availability
+- Rate limiter
+- Endpoint to end the game manually
+- Expire the games
+- Add caching (Redis)
+- Group permissions (limitation by Free tier)
+
+### Assumptions
+- Limited the total number of attempts to 20000
