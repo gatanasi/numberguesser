@@ -17,7 +17,7 @@ The solution should be hosted in Microsoft Azure Cloud using the free subscripti
 - Add unit, integration and e2e-tests
 - Credentials should be stored in Azure Key Vault
 - Implement health check ping endpoint
-- Swagger
+- Javadoc
 - CI / CD
 - High availability
 - Rate limiter
