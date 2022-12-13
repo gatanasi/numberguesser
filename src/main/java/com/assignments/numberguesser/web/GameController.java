@@ -13,7 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @RestController
@@ -32,7 +36,7 @@ public class GameController {
 
     @PostMapping(path = "/guess", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('APPROLE_Player')")
-    public ResponseEntity<GuessNumberResponse> guessNumber(@RequestBody GuessNumberRequest guessNumberRequest)
+    public ResponseEntity<GuessNumberResponse> guessNumber(@RequestBody final GuessNumberRequest guessNumberRequest)
             throws MaxAttemptsExceededException, GameNotFoundException, GameAlreadyFinishedException {
         GuessNumberResponse guessNumberResponse = gameService.guessNumber(guessNumberRequest);
         return new ResponseEntity<>(guessNumberResponse, HttpStatus.OK);

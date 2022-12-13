@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -50,42 +49,40 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional
-    public GuessNumberResponse guessNumber(GuessNumberRequest guessNumberRequest) throws GameNotFoundException, MaxAttemptsExceededException, GameAlreadyFinishedException {
-        GuessNumberResponse guessNumberResponse = null;
+    public GuessNumberResponse guessNumber(final GuessNumberRequest guessNumberRequest)
+            throws GameNotFoundException, MaxAttemptsExceededException, GameAlreadyFinishedException {
 
+        Game currentGame = gameRepository.findById(guessNumberRequest.getGameId())
+                .orElseThrow(() -> new GameNotFoundException("Game not found with ID= " + guessNumberRequest.getGameId()));
+
+        if (currentGame.getStatus().equals(Status.FINISHED)) {
+            throw new GameAlreadyFinishedException();
+        }
+
+        GuessNumberResponse guessNumberResponse;
         Integer lastGuess = guessNumberRequest.getNumberGuess();
+        Integer winnerNumber = currentGame.getWinnerNumber();
+        Integer numberOfAttempts = currentGame.getNumberOfAttempts();
 
-        Optional<Game> currentGame = gameRepository.findById(guessNumberRequest.getGameId());
-        if (currentGame.isEmpty()) {
-            throw new GameNotFoundException("Game not found with ID= " + guessNumberRequest.getGameId());
-        } else {
-            if (currentGame.get().getStatus().equals(Status.FINISHED)) {
-                throw new GameAlreadyFinishedException();
-            }
-            Integer winnerNumber = currentGame.get().getWinnerNumber();
-            Integer numberOfAttempts = currentGame.get().getNumberOfAttempts();
-            currentGame.get().setStatus(Status.IN_PROGRESS);
-
+        try {
             if (numberOfAttempts < MAX_ATTEMPTS) {
+                currentGame.setStatus(Status.IN_PROGRESS);
+                ++numberOfAttempts;
                 if (lastGuess.equals(winnerNumber)) {
                     guessNumberResponse = new GuessNumberResponse("EQUAL");
-                    currentGame.get().setStatus(Status.FINISHED);
+                    currentGame.setStatus(Status.FINISHED);
                 } else if (lastGuess < winnerNumber) {
                     guessNumberResponse = new GuessNumberResponse("SMALLER");
-                    numberOfAttempts++;
                 } else {
                     guessNumberResponse = new GuessNumberResponse("LARGER");
-                    numberOfAttempts++;
                 }
             } else {
-                currentGame.get().setNumberOfAttempts(numberOfAttempts);
-                currentGame.get().setStatus(Status.FINISHED);
-                gameRepository.save(currentGame.get());
+                currentGame.setStatus(Status.FINISHED);
                 throw new MaxAttemptsExceededException();
             }
-
-            currentGame.get().setNumberOfAttempts(numberOfAttempts);
-            gameRepository.save(currentGame.get());
+        } finally {
+            currentGame.setNumberOfAttempts(numberOfAttempts);
+            gameRepository.save(currentGame);
         }
 
         return guessNumberResponse;

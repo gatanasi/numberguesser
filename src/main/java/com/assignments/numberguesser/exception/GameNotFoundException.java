@@ -2,7 +2,7 @@ package com.assignments.numberguesser.exception;
 
 public class GameNotFoundException extends Exception {
 
-    public GameNotFoundException(String error) {
+    public GameNotFoundException(final String error) {
         super(error);
     }
 }

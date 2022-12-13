@@ -18,7 +18,7 @@ public class ExceptionHandlerController {
     @ExceptionHandler(GameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse requestGameNotFound(GameNotFoundException exception) {
+    public ErrorResponse requestGameNotFound(final GameNotFoundException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
