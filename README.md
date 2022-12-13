@@ -23,8 +23,9 @@ The solution should be hosted in Microsoft Azure Cloud using the free subscripti
 - Rate limiter
 - Endpoint to end the game manually
 - Expire the games
-- Add caching (Redis)
+- Add caching according to business needs
 - Group permissions (limitation by Free tier)
+- Allow for customization of the game through config files
 
 ### Assumptions
 - Limited the total number of attempts to 20000

@@ -22,9 +22,9 @@ public class Game {
 
     private Integer winnerNumber;
 
-    private Integer numberOfAttempts;
+    private Integer numberOfAttempts = 0;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.NEW;
 
 }
