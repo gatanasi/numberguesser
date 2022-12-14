@@ -1,14 +1,23 @@
 package com.assignments.numberguesser.config;
 
+import com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+public class WebSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.csrf().disable();
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/game/**").authenticated()
+                .anyRequest().permitAll()
+                .and()
+                .csrf()
+                .disable();
     }
 }

@@ -24,18 +24,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/game")
 public class GameController {
 
+    public static final String PLAYER_ROLE = "APPROLE_Player";
+
     @Autowired
     private GameService gameService;
 
     @GetMapping(path = "/start", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('APPROLE_Player')")
+    @PreAuthorize("hasAuthority(\"" + PLAYER_ROLE + "\")")
     public ResponseEntity<NewGameResponse> startGame() {
         NewGameResponse newGameResponse = gameService.startNewGame();
         return new ResponseEntity<>(newGameResponse, HttpStatus.OK);
     }
 
     @PostMapping(path = "/guess", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('APPROLE_Player')")
+    @PreAuthorize("hasAuthority(\"" + PLAYER_ROLE + "\")")
     public ResponseEntity<GuessNumberResponse> guessNumber(@RequestBody final GuessNumberRequest guessNumberRequest)
             throws MaxAttemptsExceededException, GameNotFoundException, GameAlreadyFinishedException {
         GuessNumberResponse guessNumberResponse = gameService.guessNumber(guessNumberRequest);
